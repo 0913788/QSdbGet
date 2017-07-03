@@ -9,11 +9,11 @@ public class FeedWatcher
     private static readonly object AddFeedLock = new object();
     private static FeedWatcher ActiveFeedWatcher = null;
     private static Dictionary<int,bool> EmployeeFeeds = new Dictionary<int,bool>();
-    private static Dictionary<int, DynamicLocation> FeedData = new Dictionary<int, DynamicLocation>();
+    private static Dictionary<int, Location> FeedData = new Dictionary<int, Location>();
 
     private FeedWatcher(int employeeID) {
         EmployeeFeeds.Add(employeeID, true);
-        FeedData.Add(employeeID, new DynamicLocation((float)0.000, (float)0.000,0));
+        FeedData.Add(employeeID, new Location((float)0.000, (float)0.000));
     }
 
     public static void RemoveFeed(int employeeID)
@@ -25,7 +25,7 @@ public class FeedWatcher
         }
     }
 
-    public static void  ReplaceFeedData(int employeeId,DynamicLocation location)
+    public static void  ReplaceFeedData(int employeeId,Location location)
     {
         lock (AddDataLock)
         {
@@ -33,7 +33,7 @@ public class FeedWatcher
         }
     }
 
-    public static DynamicLocation GetLastFeedData(int employeeId)
+    public static Location GetLastFeedData(int employeeId)
     {
         lock (AddFeedLock)
         {

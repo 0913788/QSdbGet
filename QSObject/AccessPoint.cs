@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class AccessPoint {
     public string MAC;
-    public StaticLocation Location;
+    public Location Location;
 
-    public AccessPoint(string mac, StaticLocation location)
+    public AccessPoint(string mac, Location location)
     {
         MAC = mac;
         Location = location;

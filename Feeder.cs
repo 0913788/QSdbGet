@@ -17,21 +17,14 @@ public class Feeder
 
     private void Work(int employeeID)
     {
-        x = 0;
+        GetDbData data = new GetDbData(); 
         while (true)
         {
-            if (FeedWatcher.FeedStatus(employeeID))
-            {
-                DynamicLocation z = new DynamicLocation((float)0.000, (float)0.000, 0);
-                z.TimeStamp = x;
-                FeedWatcher.ReplaceFeedData(employeeID, z);
-                if (x > 50000) x = 0;
-                else x++;
-                continue;
-            } /*FeedWatcher.ReplaceFeedData(employeeID, new GetDbData().getLastKnowEmployeeLocation(employeeID));*/
+            if (FeedWatcher.FeedStatus(employeeID)) FeedWatcher.ReplaceFeedData(employeeID, data.EmployeeFeedCall(employeeID));
             else active = false; Debug.Log("Quiting"); return;
         }
     }
+
      public bool kill()
     {
         try

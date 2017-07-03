@@ -9,29 +9,41 @@ public class GetDbData
     string _baseURL = "http://145.24.222.153/Webserver/",_extentionURL,JsonResult;
     WWW _wwwResult;
 
-    //Full data set
-    public string getFullEmployee(int employeeId)
+    private void waitForWWW(WWW site)
     {
-        Dictionary<string, object> retDict = new Dictionary<string, object>();
-        _extentionURL = "Employee/?empId=" + employeeId;
-        _wwwResult = new WWW(_baseURL + _extentionURL);
-        //Opzoek naar iets mooiers
-        while (!_wwwResult.isDone)
+        while (!site.isDone)
         {
             Thread.Sleep(10);
         }
-        JsonResult = _wwwResult.text;
-        return JsonResult;
     }
 
-    //Employees (int building)
+    //Full data set
 
-    public DynamicLocation EmployeeFeedCall(int employeeId)
+    //Employees (int building)
+    public List<Employee> getEmployeesAtBuilding(int BuildingID)
+    {
+        List<Employee> workingEmployees = new List<Employee>();
+        _extentionURL = "Employees=" + BuildingID;
+        _wwwResult = new WWW(_baseURL + _extentionURL);
+        waitForWWW(_wwwResult);
+
+        var parsed = JSON.Parse(_wwwResult.text);
+        for (int i = 0; i < parsed.AsArray.Count-1; i++)
+        {
+            Employee newEmp = new Employee(parsed[i]["Id"], parsed[i]["Name"], parsed[i]["Profession"]);
+            newEmp.PersonnalLocation = new Location(parsed[i]["X"], parsed[i]["Y"]);
+            workingEmployees.Add(newEmp);
+        }
+        return workingEmployees;
+    }
+
+    public Location EmployeeFeedCall(int employeeId)
     {
         _extentionURL = "Employee/Feed/?EmployeeID=" + employeeId;
         _wwwResult = new WWW(_baseURL + _extentionURL);
         JsonResult = _wwwResult.text;
-        return JsonUtility.FromJson<DynamicLocation>(JsonResult);
+        var parsed = JSON.Parse(_wwwResult.text);
+        return new Location(parsed["feedemployee"]["X"], parsed["feedemployee"]["Y"]);
     }
 
     public Room getRoom(int roomID)
